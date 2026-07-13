@@ -1,0 +1,9 @@
+{
+  "name": "strava-map",
+  "private": true,
+  "type": "module",
+  "description": "CLI for plotting Strava routes through the strava.com route builder UI",
+  "dependencies": {
+    "playwright-core": "^1.50.0"
+  }
+}

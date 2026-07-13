@@ -1,0 +1,13 @@
+{
+  "name": "strava-map",
+  "owner": {
+    "name": "Andrew Li"
+  },
+  "plugins": [
+    {
+      "name": "strava-map",
+      "source": "./",
+      "description": "Plot, save, and manage Strava routes by driving the strava.com route-builder UI through a persistent logged-in browser — no Strava API keys needed."
+    }
+  ]
+}

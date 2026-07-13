@@ -1,0 +1,8 @@
+{
+  "name": "strava-map",
+  "description": "Plot, save, and manage Strava routes by driving the strava.com route-builder UI through a persistent logged-in browser — no Strava API keys needed.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Andrew Li"
+  }
+}
