@@ -1,0 +1,4 @@
+interface:
+  display_name: "Strava Route Builder"
+  short_description: "Build and save routes in Strava route builder"
+  default_prompt: "Use $strava-route to create and save this Strava route."

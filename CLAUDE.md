@@ -8,8 +8,9 @@ coordinates and drives the builder with `node strava.js` commands.
 
 ```bash
 node strava.js start        # launch the dedicated Chrome window (once)
-# → user logs into strava.com in that window (login persists in ~/.strava-map/;
-#   a legacy repo-local .browser-profile/ is still honored if present)
+# → bring that Chromium window to the foreground and log into Strava there
+#   (login persists in ~/.strava-map/; a legacy repo-local .browser-profile/
+#   is still honored if present)
 node strava.js open         # go to the route builder (strava.com/maps/create)
 node strava.js goto 40.7715 -73.9730 15          # aim the camera (lat lng zoom)
 node strava.js plot "40.7680,-73.9819" "40.7736,-73.9770" "40.7791,-73.9695"
@@ -50,16 +51,25 @@ teaches Claude this workflow. Data (login profile, screenshots) lives in
 
 ## Plotting session checklist
 
-1. `status` → `open` (informational modals are auto-dismissed).
+1. `status` → make sure the dedicated Chromium window is visible, unminimized,
+   and in the foreground → `open`. CDP being reachable does **not** mean a
+   human can see the browser; ask the user to bring it forward if necessary.
+   Informational modals are auto-dismissed.
 2. **Turn off the Community Photos layer before plotting** — photo markers
    swallow waypoint clicks at exactly the photogenic places people want routes
    through: `ui "Change map style" --click`, then `ui "Community Photos"
    --click`. The next map click may be consumed closing the popover — the
-   `click`/`plot` commands print distance, so a no-op click is visible.
+   `plot` command and the screenshot's distance bar make a no-op visible.
 3. Check sport/routing prefs in the panel (Run + "Follow most popular" is the
    default and right for trails).
-4. `goto <lat> <lng> 15` for the area, then `plot`. Points off-screen
-   auto-recenter; below zoom 14 plotting refuses and zooms in first.
+4. `goto <lat> <lng> 15` for the area, then plot **short hops**. For trail
+   routes, place shaping waypoints at every meaningful junction and roughly
+   every 0.3–0.6 mi (0.5–1 km); never make a trail-routing request longer
+   than 0.75 mi (1.2 km) in one click. The requested stops can be farther
+   apart, but connect them through these intermediate points. Points off-screen
+   auto-recenter; below zoom 14 plotting refuses and zooms in first. Use
+   `click` one-at-a-time or small `plot` batches with `--delay 2000` when the
+   terrain is complex.
 5. Verify visually: overview screenshot + zoom onto each critical junction.
    **Waypoints snap to Strava's routing graph, not to what you clicked or to
    the heatmap** — a heavily-used trail can still be missing from the graph
@@ -68,6 +78,17 @@ teaches Claude this workflow. Data (login profile, screenshots) lives in
    line passes through the canvas center.
 6. `save "Name" [--private]` → prints URL. Iterating? Save the new version
    first, then `delete-route` the old one.
+
+### Routing error recovery
+
+If Strava says it could not complete an action or asks for more frequent
+waypoints, do not retry the same long leg. Take a screenshot and read the
+distance bar first: the CLI's tracked-point count records click attempts, not
+proof that Strava retained the route. If the distance is zero, reopen the
+builder and rebuild from the start with short hops. Otherwise retain the valid
+portion and add 0.3–0.6 mi shaping waypoints along the intended mapped trail.
+For a POI marker that swallows a click (especially lift stations and huts),
+place the waypoint 30–100 m along the outgoing trail rather than on the marker.
 
 ## Non-routable segments: manual mode
 
